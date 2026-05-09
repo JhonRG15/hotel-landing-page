@@ -279,8 +279,9 @@
 
                 const d1 = new Date(pendingBooking.checkIn);
                 const d2 = new Date(pendingBooking.checkOut);
-                const nights = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
-                const total = nights * roomData.precio;
+                const hours = Math.ceil((d2 - d1) / (1000 * 60 * 60));
+                const precioHora = Math.round(roomData.precio / 24);
+                const total = hours * precioHora;
 
                 // Actualizar botón de pago
                 document.getElementById('btn-pay').innerText = `Completar Pago Seguro ($${total.toLocaleString()})`;
@@ -332,7 +333,7 @@
                             </div>
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 15px; border-top: 2px dashed #ccc; padding-top: 20px;">
-                            <span style="font-size: 1.1rem; color:#333; font-family:var(--font-heading); font-style:italic;">Estancia de ${nights} noches</span>
+                            <span style="font-size: 1.1rem; color:#333; font-family:var(--font-heading); font-style:italic;">Estancia de ${hours} horas</span>
                             <strong style="font-size: 1.8rem; color: var(--accent-color);">$${total.toLocaleString()}</strong>
                         </div>
                     </div>

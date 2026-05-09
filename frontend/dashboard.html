@@ -288,12 +288,12 @@
                 Llegada</h3>
             <div class="form-group">
                 <label>Nueva Fecha de Entrada</label>
-                <input type="date" id="edit-in"
+                <input type="datetime-local" id="edit-in"
                     style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius:4px;">
             </div>
             <div class="form-group">
                 <label>Nueva Fecha de Salida</label>
-                <input type="date" id="edit-out"
+                <input type="datetime-local" id="edit-out"
                     style="width: 100%; padding: 10px; margin-bottom: 25px; border: 1px solid #ccc; border-radius:4px;">
             </div>
             <button class="btn-dark" style="width: 100%; margin-bottom: 15px;" id="btn-save-edit">Guardar
@@ -339,7 +339,8 @@
                 reservasActuales.forEach(r => {
                     const d1 = new Date(r.fecha_entrada);
                     const d2 = new Date(r.fecha_salida);
-                    const noches = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
+                    const horas = Math.ceil((d2 - d1) / (1000 * 60 * 60));
+                    const precioHora = Math.round(r.precio / 24);
                     
                     const extraImg1 = 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80';
                     const extraImg2 = 'https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&w=800&q=80';
@@ -364,8 +365,8 @@
                                 <h3>${r.tipo}</h3>
                                 <p><strong>No. Confirmación:</strong> #${r.id}</p>
                                 <p><strong>Llegada:</strong> ${r.fecha_entrada}</p>
-                                <p><strong>Salida:</strong> ${r.fecha_salida} (${noches} noches)</p>
-                                <h4 style="margin-top:15px; color: var(--accent-color); font-size: 1.3rem;">Total Pagado: $${(noches * r.precio).toLocaleString()}</h4>
+                                <p><strong>Salida:</strong> ${r.fecha_salida} (${horas} horas)</p>
+                                <h4 style="margin-top:15px; color: var(--accent-color); font-size: 1.3rem;">Total Pagado: $${(horas * precioHora).toLocaleString()}</h4>
                                 
                                 <div class="actions">
                                     <button class="btn-edit" onclick="openEdit(${r.id}, ${r.habitacion_id}, '${r.fecha_entrada}', '${r.fecha_salida}')">Cambiar Fechas</button>

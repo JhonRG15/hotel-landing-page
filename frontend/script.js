@@ -3,7 +3,10 @@ const btnSearch = document.getElementById('btn-search');
 const checkInInput = document.getElementById('check-in');
 const checkOutInput = document.getElementById('check-out');
 const authLinks = document.getElementById('auth-links');
-const hoy = new Date().toISOString().split("T")[0];
+// Para datetime-local necesitamos el formato YYYY-MM-DDTHH:MM
+const now = new Date();
+now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+const hoy = now.toISOString().slice(0, 16);
 checkInInput.min = hoy;
 checkOutInput.min = hoy;
 
@@ -54,14 +57,18 @@ function renderRooms(rooms, checkIn = '', checkOut = '') {
     }
 
     rooms.forEach(room => {
+        const precioHora = Math.round(room.precio / 24);
         const roomCard = `
             <div class="room-card">
                 <img id="img-room${room.id}" src="${room.img}" alt="${room.tipo}">
                 <div class="room-info">
                     <h3>${room.tipo}</h3>
                     <p class="room-desc">${room.desc}</p>
+                    <p class="room-details" style="font-size: 0.9em; color: #555; margin-bottom: 10px;">
+                        <i class="fas fa-bed"></i> Camas Cómodas | <i class="fas fa-wifi"></i> Wifi | <i class="fas fa-tv"></i> TV
+                    </p>
                     <div class="room-footer">
-                        <span class="price">$${room.precio.toLocaleString()} <span>/ noche</span></span>
+                        <span class="price">$${precioHora.toLocaleString()} <span>/ hora</span></span>
                         <button class="btn-dark btn-sm" onclick="bookRoom(${room.id}, '${checkIn}', '${checkOut}')">Reservar</button>
                     </div>
                 </div>
