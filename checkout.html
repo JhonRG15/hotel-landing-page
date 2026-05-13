@@ -274,7 +274,7 @@
 
         async function loadRoomDetails() {
             try {
-                const res = await fetch(`http://${window.location.hostname}:3001/api/habitaciones/` + pendingBooking.habitacion_id);
+                const res = await fetch(`/api/habitaciones/` + pendingBooking.habitacion_id);
                 roomData = await res.json();
 
                 const d1 = new Date(pendingBooking.checkIn);
@@ -408,7 +408,7 @@
 
             setTimeout(async () => {
                 try {
-                    const res = await fetch(`http://${window.location.hostname}:3001/api/reservas`, {
+                    const res = await fetch(`/api/reservas`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({

@@ -1,12 +1,17 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 app.use(cors());
-app.use(express.json()); // Necesario para parsear el body de POST/PUT
+app.use(express.json());
+
+// Servir archivos estáticos desde la raíz (donde estará el index.html)
+app.use(express.static(__dirname));
 
 // 1. BASE DE DATOS
+// La base de datos se creará en la raíz
 const db = new sqlite3.Database('./hotel.db', (err) => {
     if (err) console.error("Error conectando a BD:", err);
     else console.log("BD Conectada.");
@@ -46,18 +51,17 @@ db.serialize(() => {
     db.get("SELECT COUNT(*) AS count FROM habitaciones", (err, row) => {
         if (!err && row.count === 0) {
             const stmt = db.prepare("INSERT INTO habitaciones (id, tipo, desc, precio, img) VALUES (?, ?, ?, ?, ?)");
-            stmt.run(1, 'Habitación Sencilla', 'Una cama, un baño, ideal para una persona.', 80000, './imgs/room_single.jpg');
-            stmt.run(2, 'Habitación Doble', 'Dos camas, un baño, ideal para dos personas.', 120000, './imgs/room_double.jpg');
-            stmt.run(3, 'Habitación Familiar', 'Ideal para familias y grupos de amigos.', 180000, './imgs/room_familiar.jpg');
-            stmt.run(4, 'Suite Deluxe', 'Habitación para más de dos personas, sala y baño.', 250000, './imgs/room_suite.jpg');
-            stmt.run(5, 'Suite Presidencial', 'Increible pent-house VIP con todos los lujos', 350000, './imgs/room_presidential.jpg');
+            stmt.run(1, 'Habitación Sencilla', 'Una cama, un baño, ideal para una persona.', 80000, './imgs/room_single.png');
+            stmt.run(2, 'Habitación Doble', 'Dos camas, un baño, ideal para dos personas.', 120000, './imgs/room_double.png');
+            stmt.run(3, 'Habitación Familiar', 'Ideal para familias y grupos de amigos.', 180000, './imgs/room_familiar.png');
+            stmt.run(4, 'Suite Deluxe', 'Habitación para más de dos personas, sala y baño.', 250000, './imgs/room_suite.png');
+            stmt.run(5, 'Suite Presidencial', 'Increible pent-house VIP con todos los lujos', 350000, './imgs/room_presidential.png');
             stmt.finalize();
         }
     });
 });
 
 // --- AUTENTICACIÓN ---
-// Registro
 app.post('/api/register', (req, res) => {
     const { nombre, email, password } = req.body;
     if (!nombre || !email || !password) return res.status(400).json({ error: 'Faltan datos' });
@@ -71,7 +75,6 @@ app.post('/api/register', (req, res) => {
     });
 });
 
-// Login
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
     db.get("SELECT id, nombre, email FROM usuarios WHERE email = ? AND password = ?", [email, password], (err, user) => {
@@ -82,12 +85,10 @@ app.post('/api/login', (req, res) => {
 });
 
 // --- HABITACIONES ---
-// GET Habitaciones filtradas
 app.get('/api/habitaciones-disponibles', (req, res) => {
     const { checkIn, checkOut } = req.query;
 
     if (!checkIn || !checkOut) {
-        // Retorna todas si no hay filtro estricto
         db.all("SELECT * FROM habitaciones", [], (err, rows) => {
             if (err) return res.status(500).json({ error: err.message });
             res.json(rows);
@@ -118,11 +119,9 @@ app.get('/api/habitaciones/:id', (req, res) => {
 
 
 // --- RESERVAS ---
-// Crear
 app.post('/api/reservas', (req, res) => {
     const { usuario_id, habitacion_id, checkIn, checkOut } = req.body;
 
-    // Verificar disponibilidad (Doble check)
     const sqlCheck = `SELECT id FROM reservas WHERE habitacion_id = ? AND fecha_entrada < ? AND fecha_salida > ?`;
     db.get(sqlCheck, [habitacion_id, checkOut, checkIn], (err, row) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -136,7 +135,6 @@ app.post('/api/reservas', (req, res) => {
     });
 });
 
-// Leer por usuario
 app.get('/api/reservas/usuario/:id', (req, res) => {
     const sql = `
         SELECT r.id, r.habitacion_id, r.fecha_entrada, r.fecha_salida, h.tipo, h.precio, h.img
@@ -151,7 +149,6 @@ app.get('/api/reservas/usuario/:id', (req, res) => {
     });
 });
 
-// Actualizar (Fechas)
 app.put('/api/reservas/:id', (req, res) => {
     const reservaId = req.params.id;
     const { checkIn, checkOut, habitacion_id } = req.body;
@@ -169,7 +166,6 @@ app.put('/api/reservas/:id', (req, res) => {
     });
 });
 
-// Eliminar
 app.delete('/api/reservas/:id', (req, res) => {
     db.run("DELETE FROM reservas WHERE id = ?", [req.params.id], function (err) {
         if (err) return res.status(500).json({ error: err.message });
@@ -177,6 +173,12 @@ app.delete('/api/reservas/:id', (req, res) => {
     });
 });
 
-app.listen(3001, () => {
-    console.log('Servidor corriendo en el puerto 3001');
+// Ruta para cualquier otra petición, servir index.html
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
