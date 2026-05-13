@@ -257,6 +257,36 @@
             cursor: pointer;
         }
         .indicator.active { background: white; }
+
+        @media (max-width: 768px) {
+            .reserva-card {
+                flex-direction: column;
+            }
+            .reserva-card img, .carousel {
+                width: 100% !important;
+                height: 250px;
+            }
+            .actions {
+                flex-direction: column;
+            }
+            .actions button {
+                width: 100%;
+            }
+            .navbar {
+                padding: 15px 20px !important;
+                flex-direction: column !important;
+                gap: 15px;
+            }
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            .modal-content {
+                width: 90%;
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 
