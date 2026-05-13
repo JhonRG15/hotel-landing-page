@@ -547,6 +547,20 @@ h4 {
 
 /* Responsive */
 @media (max-width: 900px) {
+    .navbar {
+        padding: 15px 20px !important;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .nav-links {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 10px 15px;
+        gap: 15px;
+    }
+
     .contact-container {
         flex-direction: column;
     }
@@ -560,14 +574,50 @@ h4 {
         flex-direction: column;
         margin-top: 30px;
         gap: 15px;
+        width: 90%;
+    }
+
+    .booking-item {
+        width: 100%;
+    }
+
+    .input-wrapper input {
+        width: 100%;
+    }
+
+    .number-input {
+        width: 100%;
+    }
+    
+    #btn-search {
+        width: 100%;
     }
 
     .hero {
-        min-height: 800px;
+        min-height: auto;
+        padding-top: 120px;
+        padding-bottom: 40px;
     }
 }
 
 @media (max-width: 600px) {
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .hero-buttons a {
+        width: 100%;
+    }
+
+    .hero-buttons a button {
+        width: 100%;
+    }
+
     .amenities-grid {
         grid-template-columns: 1fr;
     }
@@ -582,6 +632,10 @@ h4 {
 
     .footer-container {
         grid-template-columns: 1fr;
+    }
+
+    .section-header h2 {
+        font-size: 2rem;
     }
 }
 
