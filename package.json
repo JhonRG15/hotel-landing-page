@@ -4,7 +4,7 @@
   "description": "Hotel Landing Page with Backend - Azure Deployment Ready",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
